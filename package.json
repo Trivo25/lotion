@@ -1,6 +1,6 @@
 {
   "name": "@trivo/lotion",
-  "version": "6.0.7",
+  "version": "6.0.8",
   "description": "smooth, easy blockchain apps. powered by tendermint consensus. Compatible with Tendermint Core 0.34.15",
   "main": "dist/index.js",
   "scripts": {
