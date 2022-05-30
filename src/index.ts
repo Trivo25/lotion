@@ -138,7 +138,6 @@ class LotionApp implements Application {
     } else {
       this.home = join(this.lotionHome, randomBytes(16).toString("hex"));
     }
-    console.log(this.home);
   }
 
   async start() {

@@ -8,15 +8,18 @@ let app = lotion({
   p2pPort: 25551,
   rpcPort: 25552,
   abciPort: 25553,
-  baseDir: ".data",
 });
 
 app.use(function (state, tx) {
   state.count++;
   console.log(state);
-  return {
-    code: 1,
-  };
+});
+
+app.useBlock((state, context) => {
+  state.blockCount++;
+  let key = Object.keys(context.validators)[0];
+  context.validators[key].power++;
+  console.log(context);
 });
 
 app.start();

@@ -1,4 +1,5 @@
 import djson = require("deterministic-json");
+import { init } from "tendermint-node";
 import vstruct = require("varstruct");
 
 let { createHash } = require("crypto");
@@ -90,22 +91,25 @@ export default function createABCIServer(
     beginBlock(request) {
       // ensure we don't have any changes since last commit
       merk.rollback(state);
-
       let time = request.header.time.seconds.toNumber();
       stateMachine.transition({ type: "begin-block", data: { time } });
       return {};
     },
-    endBlock() {
+    endBlock(request) {
       stateMachine.transition({ type: "block", data: {} });
-      let { validators } = stateMachine.context();
       let validatorUpdates = [];
+      let { validators } = stateMachine.context();
 
       for (let pubKey in validators) {
-        validatorUpdates.push({
-          pubKey: { type: "ed25519", data: Buffer.from(pubKey, "base64") },
-          power: { low: validators[pubKey], high: 0 },
-        });
+        let el = {
+          pubKey: {
+            ed25519: Buffer.from(pubKey, "base64"),
+          },
+          power: { low: validators[pubKey].power, high: 0 },
+        };
+        validatorUpdates.push(el);
       }
+
       return {
         validatorUpdates,
       };
@@ -149,11 +153,7 @@ export default function createABCIServer(
        * height is no longer tracked on info (we want to encourage isomorphic chain/channel code)
        */
       // ! TODO: FIX
-      let initialInfo = {
-        name: "someChain",
-        idk: 123,
-      };
-      //buildInitialInfo(request);
+      let initialInfo = buildInitialInfo(request);
       stateMachine.initialize(initialState, initialInfo);
       await merk.commit(state);
       return {};
@@ -186,10 +186,15 @@ export default function createABCIServer(
 function buildInitialInfo(initChainRequest) {
   let result = {
     validators: {},
+    chainId: initChainRequest.chainId,
+    consensusParams: initChainRequest.consensusParams,
   };
   initChainRequest.validators.forEach((validator) => {
-    result.validators[validator.pubKey.data.toString("base64")] =
-      validator.power.toNumber();
+    let key = Object.keys(validator.pubKey)[0];
+    result.validators[validator.pubKey[key].toString("base64")] = {
+      power: validator.power.toNumber(),
+      pubKeyType: key,
+    };
   });
 
   return result;

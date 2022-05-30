@@ -30,7 +30,7 @@ function createServer(app) {
         // if app throws an error, send an 'exception' response
         // and close the connection
         debug(`ABCI error on "${type}":`, err);
-        message = { exception: { error: "err.toString()" } };
+        message = { exception: { error: err.toString() } };
         conn.write(message);
         conn.close();
       };
