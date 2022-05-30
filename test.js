@@ -1,25 +1,22 @@
-/* import lotion from "./dist";
-import getPort from "get-port";
- let { parseTx } = require("./dist/parseTx");
-
-let byte = parseTx({
-  some: 123,
-});
-console.log(byte); 
+let lotion = require("./dist");
 
 let app = lotion({
   initialState: {
     count: 0,
   },
   logTendermint: true,
-  p2pPort: getPort(),
-  rpcPort: getPort(),
-  abciPort: getPort(),
+  p2pPort: 25551,
+  rpcPort: 25552,
+  abciPort: 25553,
+  baseDir: ".data",
 });
 
 app.use(function (state, tx) {
   state.count++;
   console.log(state);
+  return {
+    code: 1,
+  };
 });
 
 app.start();
@@ -35,5 +32,4 @@ let server = createServer({
   // implement any ABCI method handlers here
 });
 server.listen(26658);
- */
  */

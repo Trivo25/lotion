@@ -24,6 +24,7 @@ interface ApplicationConfig extends BaseApplicationConfig {
   genesisPath?: string;
   peers?: Array<string>;
   discovery?: boolean;
+  baseDir?: string;
 }
 
 interface PortMap {
@@ -56,7 +57,7 @@ class LotionApp implements Application {
   private logTendermint: boolean;
   private discovery: boolean = true;
   private home: string;
-  private lotionHome: string = join(dirname("."), ".lotion", "networks");
+  private lotionHome: string;
 
   public use;
   public useTx;
@@ -72,7 +73,11 @@ class LotionApp implements Application {
     this.genesisPath = config.genesisPath;
     this.peers = config.peers;
     this.discovery = config.discovery == null ? true : config.discovery;
-
+    this.lotionHome = join(
+      dirname("."),
+      !!config.baseDir ? config.baseDir : ".lotion",
+      "networks"
+    );
     this.setHome();
 
     Object.assign(this, this.application);
@@ -165,14 +170,14 @@ class LotionApp implements Application {
       peers: this.peers,
     });
 
-    //this.setGenesis();
-    //this.setGCI();
+    this.setGenesis();
+    this.setGCI();
 
-    // start discovery server
-    /*     this.discoveryServer = createDiscoveryServer({
+    //start discovery server
+    this.discoveryServer = createDiscoveryServer({
       GCI: this.GCI,
       rpcPort: this.ports.rpc,
-    }); */
+    });
 
     let appInfo = this.getAppInfo();
 

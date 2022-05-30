@@ -115,15 +115,15 @@ export default async function createTendermintProcess({
     tendermintProcess.stdout.pipe(process.stdout);
     tendermintProcess.stderr.pipe(process.stderr);
   }
-  console.log(2);
+
   tendermintProcess.then(() => {
     if (closing) return;
     throw new Error("Tendermint exited unexpectedly");
   });
-  console.log(3);
+
   //await tendermintProcess.synced();
-  sleep(2000);
-  console.log(4);
+  sleep(1000);
+
   return {
     close() {
       closing = true;
