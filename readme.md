@@ -1,13 +1,12 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/keppel/lotion"><img src="https://user-images.githubusercontent.com/1269291/36411921-a4eadaf6-15cc-11e8-9614-b316de38d534.png" alt="Lotion" width="200"></a>
   <br>
-      ✨ Lotion ✨
+      ✨ Lotion ✨ for Tendermint 0.34.15
   <br>
   <br>
 </h1>
 
-<h4 align="center">Smooth, easy blockchain apps. Powered by Tendermint consensus.</h4>
+<h4 align="center">Fork of <a href=="https://github.com/nomic-io/lotion" target="_blank">LotionJS</a> compatible with Tendermint 0.34.15</h4>
 
 <p align="center">
   <a href="https://travis-ci.org/keppel/lotion">
@@ -51,24 +50,33 @@ $ npm install lotion
 `app.js`:
 
 ```js
-let lotion = require('lotion')
+import lotion from "@trivo/lotion";
 
 let app = lotion({
   initialState: {
-    count: 0
-  }
-})
+    count: 0,
+  },
+  logTendermint: true,
+  p2pPort: 25551,
+  rpcPort: 25552,
+  abciPort: 25553,
+});
 
-app.use(function(state, tx) {
-  if (state.count === tx.nonce) {
-    state.count++
-  }
-})
+app.use(function (state, tx) {
+  state.count++;
+  console.log(state);
+});
 
-app.start()
+app.start();
+
+// making a transaction
+// # curl http://localhost:<PORT_OF_RPC>/broadcast_tx_commit?tx=0x0000000c7b22736f6d65223a3132337d00000c21
+// see src/parseTx.ts for tx encoding
 ```
 
 ## Introduction
+
+### This is a fork of LotionJS. I merged some of the dependencies (js-abci, tendermint-node) into this monorepo for easier maintainability. Compatible with Tendermint Core 0.34.15+
 
 Lotion lets you build blockchains. At any moment in time, the whole state of your blockchain is represented by a single JavaScript object called the `state`.
 
@@ -96,12 +104,12 @@ The **transaction** protocol describes what makes transactions valid, and how th
 
 ## Modules
 
-| name                                                 | description                              |
-| ---------------------------------------------------- | ---------------------------------------- |
-| [coins](https://github.com/mappum/coins)             | fully-featured cryptocurrency middleware |
-| [htlc](https://github.com/mappum/htlc)               | hashed timelock contracts on coins       |
-| [shea](https://github.com/keppel/shea)               | on-chain client code management          |
-| [merk](https://github.com/mappum/merk)               | merkle AVL trees in javascript           |
+| name                                     | description                              |
+| ---------------------------------------- | ---------------------------------------- |
+| [coins](https://github.com/mappum/coins) | fully-featured cryptocurrency middleware |
+| [htlc](https://github.com/mappum/htlc)   | hashed timelock contracts on coins       |
+| [shea](https://github.com/keppel/shea)   | on-chain client code management          |
+| [merk](https://github.com/mappum/merk)   | merkle AVL trees in javascript           |
 
 ## Contributors
 
@@ -175,19 +183,19 @@ Starts your app.
 Lotion apps each have a unique global chain identifier (GCI). You can light client verify any running Lotion app from any computer in the world as long as you know its GCI.
 
 ```js
-let { connect } = require('lotion')
-let GCI = '6c94c1f9d653cf7e124b3ec57ded2589223a96416921199bbf3ef3ca610ffceb'
+let { connect } = require("lotion");
+let GCI = "6c94c1f9d653cf7e124b3ec57ded2589223a96416921199bbf3ef3ca610ffceb";
 
-let { state, send } = await connect(GCI)
+let { state, send } = await connect(GCI);
 
-let count = await state.count
-console.log(count) // 0
+let count = await state.count;
+console.log(count); // 0
 
-let result = await send({ nonce: 0 })
-console.log(result) // { height: 42, ok: true }
+let result = await send({ nonce: 0 });
+console.log(result); // { height: 42, ok: true }
 
-count = await state.count
-console.log(count) // 1
+count = await state.count;
+console.log(count); // 1
 ```
 
 Under the hood, the GCI is used to discover and torrent the app's genesis.json.
@@ -197,10 +205,10 @@ It's also used as the rendezvous point with peers on the bittorrent dht and thro
 You can get the GCI of an app being run by a full node like this:
 
 ```js
-let app = require('lotion')({ initialState: { count: 0 } })
+let app = require("lotion")({ initialState: { count: 0 } });
 
-let { GCI } = await app.start()
-console.log(GCI) // '6c94c1f9d653cf7e124b3ec57ded2589223a96416921199bbf3ef3ca610ffceb'
+let { GCI } = await app.start();
+console.log(GCI); // '6c94c1f9d653cf7e124b3ec57ded2589223a96416921199bbf3ef3ca610ffceb'
 ```
 
 ## Links

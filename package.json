@@ -1,10 +1,10 @@
 {
   "name": "@trivo/lotion",
-  "version": "5.0.0",
-  "description": "smooth, easy blockchain apps. powered by tendermint consensus.",
+  "version": "6.0.6",
+  "description": "smooth, easy blockchain apps. powered by tendermint consensus. Compatible with Tendermint Core 0.34.15",
   "main": "dist/index.js",
   "scripts": {
-    "publish": "rm -r dist && tsc && cp ./src/*.js ./dist/",
+    "publish": "rm -r dist && tsc",
     "test": "tsc && depcheck --ignores=@types/node && nyc -r html -r text ava",
     "build-proto": "pbjs -t static-module -w commonjs -o types.js proto/**/*.proto && pbts -o index.d.ts types.js"
   },
@@ -17,6 +17,7 @@
     "axios": "^0.27.2",
     "bl": "^1.2.2",
     "debug": "^3.1.0",
+    "decamelize": "^6.0.0",
     "deterministic-json": "^1.0.5",
     "discovery-channel": "^5.5.1",
     "fs-extra": "^7.0.0",

@@ -156,14 +156,14 @@ class LotionApp implements Application {
     this.abciServer.listen(this.ports.abci);
 
     // start tendermint process
-    this.tendermintProcess = {}; /* await createTendermintProcess({
+    this.tendermintProcess = await createTendermintProcess({
       ports: this.ports,
       home: this.home,
       logTendermint: this.logTendermint,
       keyPath: this.keyPath,
       genesisPath: this.genesisPath,
       peers: this.peers,
-    }); */
+    });
 
     //this.setGenesis();
     //this.setGCI();
