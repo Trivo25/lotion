@@ -2,7 +2,7 @@ import buildApplication, {
   BaseApplicationConfig,
   StateMachine,
   Application,
-} from "lotion-state-machine";
+} from "./state-machine";
 import { join, dirname } from "path";
 import { homedir } from "os";
 import createABCIServer, { ABCIServer } from "./abci-server";
@@ -10,7 +10,6 @@ import createTendermintProcess from "./tendermint";
 import createDiscoveryServer, { DiscoveryServer } from "./discovery";
 import { randomBytes, createHash } from "crypto";
 import fs = require("fs-extra");
-import getPort = require("get-port");
 import DJSON = require("deterministic-json");
 import level = require("level");
 import merk = require("merk");

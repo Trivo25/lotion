@@ -72,7 +72,7 @@ export default async function createTendermintProcess({
       });
     }
 
-    opts.p2p.persistentPeers = peers.join(",");
+    opts.p2p.persistent_peers = peers.join(",");
   }
 
   /**
